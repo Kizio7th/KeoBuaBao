@@ -8,6 +8,8 @@ export class DailyRank {
     id: number
     @Column()
     rank: number
+    @Column()
+    score:number
     @ManyToOne(() => User, (user) => user.dailyRank, { eager: true, onDelete: 'CASCADE' })
     user: User
     @ManyToOne(() => Day, (day) => day.dailyRank, { eager: true, onDelete: 'CASCADE' })

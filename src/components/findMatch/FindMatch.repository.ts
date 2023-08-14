@@ -1,7 +1,6 @@
 import dataSource from "../../services/db/dataSource";
 import { FindMatch } from "./FindMatch.entity";
 import { User } from "../user/User.entity";
-import { UserRepository } from "../user/User.repository";
 import { MatchRepository } from "../match/Match.repository";
 
 export const FindMatchRepository = dataSource.getRepository(FindMatch).extend({
