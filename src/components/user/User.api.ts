@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from "@overnightjs/core";
+import { ClassMiddleware, Controller, Get, Post } from "@overnightjs/core";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { HttpStatusCode } from "axios";
@@ -28,9 +28,5 @@ export class UserAPI {
             }
         );
         return res.send(token);
-    }
-    @Get("tradePoint")
-    public tradePoint(req:CustomRequest, res: Response, next: NextFunction){
-        res.send(UserRepository.tradeScore(req.user))
     }
 }

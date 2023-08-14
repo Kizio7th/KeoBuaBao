@@ -9,8 +9,8 @@ export class Match {
     startTime: Date
     @Column({ type: "datetime", nullable: true })
     endTime: Date
-    @Column()
-    result: number = 0
+    @Column({ nullable: true })
+    result: number
     @OneToMany(() => FindMatch, (findMatch) => findMatch.match, { cascade: true })
     findMatch: FindMatch[]
 }

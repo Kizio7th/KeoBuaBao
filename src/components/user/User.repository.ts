@@ -44,15 +44,4 @@ export const UserRepository = dataSource.getRepository(User).extend({
       console.log(error)
     }
   },
-  async tradeScore(user: User) {
-    try {
-      user.turn += 2;
-      ScoreRepository.scoreUpdate(1, false, "Trade points for turns", user)
-      await this.save(user)
-      return "Trade successful"
-    } catch (error) {
-      console.log(error)
-    }
-    return "Trade failed"
-  }
 })

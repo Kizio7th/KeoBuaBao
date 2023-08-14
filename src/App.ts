@@ -8,6 +8,7 @@ import dataSource from './services/db/dataSource';
 import * as cronTask from './services/cron/cronTask';
 import { FindMatchAPI } from './components/findMatch/FindMatch.api';
 import { MatchAPI } from './components/match/Match.api';
+import { ScoreAPI } from './components/score/Score.api';
 
 export class App extends Server {
   constructor() {
@@ -70,7 +71,8 @@ export class App extends Server {
         // Add controllers here
         new UserAPI(),
         new FindMatchAPI(),
-        new MatchAPI()
+        new MatchAPI(),
+        new ScoreAPI()
       ])
     } catch (error) {
       console.log(error)
