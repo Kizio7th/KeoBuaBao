@@ -3,6 +3,7 @@ import { FindMatch } from "../findMatch/FindMatch.entity";
 import { Inventory } from "../inventory/Inventory.entity";
 import { Score } from "../score/Score.entity";
 import { SkinPick } from "../skinPick/SkinPick.entity";
+import { DailyRank } from "../rank/daily/DailyRank.entity";
 
 @Entity({ name: 'user' })
 export class User {
@@ -24,6 +25,8 @@ export class User {
   findMatch: FindMatch[]
   @OneToMany(() => Score, (score) => score.user, { cascade: true })
   scores: Score[]
+  @OneToMany(() => DailyRank, (dailyRank) => dailyRank.user, { cascade: true })
+  dailyRank: DailyRank[]
   @Column()
   totalScore: number
 }

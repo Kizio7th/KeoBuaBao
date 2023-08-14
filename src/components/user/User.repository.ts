@@ -1,5 +1,4 @@
 import dataSource from "../../services/db/dataSource";
-import { DailyRankRepository } from "../rank/daily/DailyRank.repository";
 import { Score } from "../score/Score.entity";
 import { ScoreRepository } from "../score/Score.repository";
 import { User } from "./User.entity";
@@ -13,14 +12,14 @@ export const UserRepository = dataSource.getRepository(User).extend({
     try {
       if (await this.findByname(name)) return "Nickname already exist! Choose another one."
       const hashedPassword = await bcrypt.hash(password, 10);
-      
-      return "New User created" + this.save({
+      const user = await this.save({
         name: name,
         avatar: avatar,
         password: hashedPassword,
         turn: 5,
         totalScore: 0
       });
+      return "New User created: " + user.name;
     } catch (error) {
       console.error(error);
     }

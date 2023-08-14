@@ -7,7 +7,8 @@ import { MatchRepository } from "../match/Match.repository";
 export const FindMatchRepository = dataSource.getRepository(FindMatch).extend({
     async matching(player1: User, player2:User) {
         const match = await MatchRepository.save({
-            startTime: new Date()
+            startTime: new Date(),
+            endTime: null
         })
         this.save({
             user: player1,

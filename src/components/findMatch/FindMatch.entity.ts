@@ -2,7 +2,7 @@ import { Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user/User.entity";
 import { Match } from "../match/Match.entity";
 
-@Entity("name:find_match")
+@Entity("find_match")
 export class FindMatch {
     @PrimaryGeneratedColumn()
     id: number

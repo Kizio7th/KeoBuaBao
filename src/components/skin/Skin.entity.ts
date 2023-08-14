@@ -1,7 +1,7 @@
 import { Column, Double, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Inventory } from "../inventory/Inventory.entity";
 
-@Entity("name:skin")
+@Entity("skin")
 export class Skin {
     @PrimaryGeneratedColumn()
     id: number
@@ -10,7 +10,7 @@ export class Skin {
     @Column()
     description: string
     @Column()
-    price: Double
+    price: number
     @OneToMany(() => Inventory, (inventory) => inventory.skin, { cascade: true })
     inventory: Inventory[]
 }

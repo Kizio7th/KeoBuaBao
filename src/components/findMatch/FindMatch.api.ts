@@ -7,7 +7,7 @@ import { User } from "../user/User.entity";
 
 
 @Controller("api/matchmaking")
-export class MatchmakingAPI {
+export class FindMatchAPI {
     private waiting: User[] = [];
     @Get("matching")
     public async matching(req: CustomRequest, res: Response, next: NextFunction) {
