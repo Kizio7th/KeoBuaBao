@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, OneToOne, PrimaryColumn } from "typeorm";
+import { Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from "typeorm";
 import { User } from "../user/User.entity";
 import { Inventory } from "../inventory/Inventory.entity";
 
@@ -9,5 +9,6 @@ export class SkinPick {
     @ManyToOne(() => User, (user) => user.skinPicks, { eager: true })
     user: User
     @OneToOne(() => Inventory, (inventory) => inventory.skinPicks, { cascade: true })
+    @JoinColumn()
     inventory: Inventory
 }
