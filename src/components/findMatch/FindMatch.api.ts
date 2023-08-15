@@ -6,7 +6,7 @@ import { User } from "../user/User.entity";
 import UserMiddleware from "../user/User.middleware";
 
 
-@Controller("api/matchmaking")
+@Controller("api/findMatch")
 @ClassMiddleware([UserMiddleware.checkAuth])
 export class FindMatchAPI {
     private waiting: User[] = [];
