@@ -5,6 +5,8 @@ import { DailyRankRepository } from '../../components/rank/daily/DailyRank.repos
 import { WeekRepository } from '../../components/time/week/Week.repository';
 import { Between } from 'typeorm';
 import { WeeklyRankRepository } from '../../components/rank/weekly/WeeklyRank.repository';
+import { MonthlyRankRepository } from '../../components/rank/month/MonthlyRank.repository';
+import { MonthRepository } from '../../components/time/month/Month.repositort';
 
 
 export const increaseTurn = cron.schedule("0 0 * * *", async () => {
@@ -72,6 +74,40 @@ export const updateWeeklyRank = cron.schedule("0 0 * * 1", async () => {
             })
         }
     } catch (error) {
-
+        console.log(error)
+    }
+});
+export const updateMonthlyRank = cron.schedule("0 0 1 * *", async () => {
+    try {
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const nextMonth = currentMonth + 1;
+        const lastDayOfMonth = new Date(currentDate.getFullYear(), nextMonth, 0).getDate();
+        const thisMonth = new Date();
+        const preMonth = new Date(thisMonth);
+        preMonth.setDate(preMonth.getDate() - lastDayOfMonth);
+        const startTime = await MonthRepository.findOne({ where: { startTime: Between(preMonth, thisMonth) } })
+        if (startTime) {
+            const preRank = await MonthlyRankRepository.find({ where: { month: startTime } });
+            for (const i of preRank) {
+                i.score = i.user.totalScore - i.score;
+            }
+            preRank.sort((a, b) => b.score - a.score);
+            for (let i = 0; i < preRank.length; i++) {
+                preRank[i].rank = i + 1;
+                await MonthlyRankRepository.save(preRank[i]);
+            }
+        }
+        const month = await MonthRepository.save({ startTime: new Date() });
+        const users = await UserRepository.find();
+        for (const i of users) {
+            await MonthlyRankRepository.save({
+                user: i,
+                startTime: month,
+                score: i.totalScore
+            })
+        }
+    } catch (error) {
+        console.log(error)
     }
 });

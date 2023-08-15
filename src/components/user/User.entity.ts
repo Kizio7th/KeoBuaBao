@@ -5,6 +5,7 @@ import { Score } from "../score/Score.entity";
 import { SkinPick } from "../skinPick/SkinPick.entity";
 import { DailyRank } from "../rank/daily/DailyRank.entity";
 import { WeeklyRank } from "../rank/weekly/WeeklyRank.entity";
+import { MonthlyRank } from "../rank/month/MonthlyRank.entity";
 
 @Entity({ name: 'user' })
 export class User {
@@ -30,6 +31,8 @@ export class User {
   dailyRank: DailyRank[]
   @OneToMany(() => WeeklyRank, (weeklyRank) => weeklyRank.user, { cascade: true })
   weeklyRank: WeeklyRank[]
+  @OneToMany(() => MonthlyRank, (monthlyRank) => monthlyRank.user, { cascade: true })
+  monthlyRank: MonthlyRank[]
   @Column()
   totalScore: number
 }
