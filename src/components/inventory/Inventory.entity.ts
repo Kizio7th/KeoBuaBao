@@ -12,5 +12,5 @@ export class Inventory {
     @ManyToOne(() => Skin, (skin) => skin.inventory, { eager: true, onDelete: 'CASCADE' })
     skin: Skin
     @OneToOne(() => SkinPick, (skinPick) => skinPick.inventory )
-    skinPicks: SkinPick[]
+    skinPicks: SkinPick
 }
