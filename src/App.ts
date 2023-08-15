@@ -10,6 +10,7 @@ import { FindMatchAPI } from './components/findMatch/FindMatch.api';
 import { MatchAPI } from './components/match/Match.api';
 import { ScoreAPI } from './components/score/Score.api';
 import { SkinAPI } from './components/skin/Skin.api';
+import { DailyRankAPI } from './components/rank/daily/DailyRank.api';
 
 export class App extends Server {
   constructor() {
@@ -76,7 +77,8 @@ export class App extends Server {
         new FindMatchAPI(),
         new MatchAPI(),
         new ScoreAPI(),
-        new SkinAPI()
+        new SkinAPI(),
+        new DailyRankAPI()
       ])
     } catch (error) {
       console.log(error)

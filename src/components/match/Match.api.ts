@@ -1,7 +1,7 @@
 import { ClassMiddleware, Controller, Post } from "@overnightjs/core";
 import { NextFunction, Request, Response } from "express";
-import { MatchRepository } from "./Match.repository";
 import { CustomRequest } from "../../types/customRequest";
+import { MatchRepository } from "./Match.repository";
 import UserMiddleware from "../user/User.middleware";
 
 @Controller("api/match")
