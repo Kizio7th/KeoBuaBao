@@ -2,7 +2,7 @@ import dataSource from "../../services/db/dataSource";
 import { Skin } from "./Skin.entity";
 import { User } from "../user/User.entity";
 import { InventoryRepository } from "../inventory/Inventory.repository";
-import { SkinPickRepository } from "../skinPick/SkinPick.reposittory";
+import { SkinPickRepository } from "../skinPick/SkinPick.repository";
 export const SkinRepository = dataSource.getRepository(Skin).extend({
     async purchase(user: User, skinId: number) {
         InventoryRepository.save({

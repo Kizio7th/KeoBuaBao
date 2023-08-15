@@ -9,6 +9,7 @@ import * as cronTask from './services/cron/cronTask';
 import { FindMatchAPI } from './components/findMatch/FindMatch.api';
 import { MatchAPI } from './components/match/Match.api';
 import { ScoreAPI } from './components/score/Score.api';
+import { SkinAPI } from './components/skin/Skin.api';
 
 export class App extends Server {
   constructor() {
@@ -73,7 +74,8 @@ export class App extends Server {
         new UserAPI(),
         new FindMatchAPI(),
         new MatchAPI(),
-        new ScoreAPI()
+        new ScoreAPI(),
+        new SkinAPI()
       ])
     } catch (error) {
       console.log(error)

@@ -9,6 +9,8 @@ import { FindMatch } from '../../components/findMatch/FindMatch.entity';
 import { Score } from '../../components/score/Score.entity';
 import { DailyRank } from '../../components/rank/daily/DailyRank.entity';
 import { Day } from '../../components/time/day/Day.entity';
+import { WeeklyRank } from '../../components/rank/weekly/WeeklyRank.entity';
+import { Week } from '../../components/time/week/Week.entity';
 
 const dataSource = new DataSource({
   type: 'mysql',
@@ -29,7 +31,9 @@ const dataSource = new DataSource({
     FindMatch,
     Score,
     DailyRank,
-    Day
+    Day,
+    WeeklyRank,
+    Week
   ],
   cache: {
     // type: 'ioredis',
