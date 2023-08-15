@@ -7,8 +7,6 @@ export class Week {
     id:number
     @Column({ type: "datetime", nullable: true })
     startTime: Date
-    @Column({ type: "datetime", nullable: true })
-    endTime: Date
     @OneToMany(() => WeeklyRank, (weeklyRank) => weeklyRank.week, { cascade: true })
     weeklyRank: WeeklyRank[]
 }

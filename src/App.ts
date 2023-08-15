@@ -31,6 +31,7 @@ export class App extends Server {
   private assignCronTasks = () => {
     cronTask.increaseTurn.start()
     cronTask.updateDailyRank.start()
+    cronTask.updateWeeklyRank.start()
   }
 
   private applyMiddleWares() {

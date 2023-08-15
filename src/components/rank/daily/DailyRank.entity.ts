@@ -6,10 +6,10 @@ import { Day } from "../../time/day/Day.entity";
 export class DailyRank {
     @PrimaryGeneratedColumn()
     id: number
-    @Column()
+    @Column({ nullable: true })
     rank: number
     @Column()
-    score:number
+    score: number
     @ManyToOne(() => User, (user) => user.dailyRank, { eager: true, onDelete: 'CASCADE' })
     user: User
     @ManyToOne(() => Day, (day) => day.dailyRank, { eager: true, onDelete: 'CASCADE' })
