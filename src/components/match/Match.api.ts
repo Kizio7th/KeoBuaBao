@@ -9,8 +9,8 @@ import { FindMatchRepository } from "../findMatch/FindMatch.repository";
 @ClassMiddleware([UserMiddleware.checkAuth])
 export class MatchAPI {
     private userChoices: Map<number, { choice: string, playerId: number }> = new Map();
-    private sendResult(result: string, status: number) {
-        SocketEmitter.emit('match-result', { result: result, status: status });
+    private sendResult(result: string, status: number, matchId: number) {
+        SocketEmitter.emit('match-result', { result: result, status: status, matchId: matchId });
     }
     @Post(":id")
     public async match(req: Request, res: Response, next: NextFunction) {
@@ -21,17 +21,17 @@ export class MatchAPI {
             if (MatchRepository.result(Choice, p1.choice) == 1) {
                 MatchRepository.updateResult(matchId, res.locals.user.id);
                 res.status(200).json({ message: "You win", status: 1 });
-                this.sendResult("You lose", 0);
+                this.sendResult("You lose", 0, matchId);
             }
             else if (MatchRepository.result(Choice, p1.choice) == -1) {
                 MatchRepository.updateResult(matchId, res.locals.user.id);
                 res.status(200).json({ message: "You lose", status: 1 });
-                this.sendResult("You win", 0);
+                this.sendResult("You win", 0, matchId);
             }
             else {
                 MatchRepository.updateResult(matchId, 0);
                 res.status(200).json({ message: "Draw", status: 1 });
-                this.sendResult("Draw", 0);
+                this.sendResult("Draw", 0, matchId);
             }
         }
         else {
@@ -48,7 +48,7 @@ export class MatchAPI {
         for (const i of findMatchs) {
             if (i.user.id != res.locals.user.id) {
                 MatchRepository.updateResult(matchId, i.user.id)
-                this.sendResult("You win, your opponent has given up", 0);
+                this.sendResult("You win, your opponent has given up", 0, matchId);
                 break;
             }
         }

@@ -92,11 +92,14 @@
             console.log('Socket connected successfully');
         });
         socket.on('match-result', (data) => {
-            if (data.status == status) {
-                document.getElementById("result").textContent = data.result;
-                status = 1;
+            if (data.matchId == matchId) {
+                if (data.status == status) {
+                    document.getElementById("result").textContent = data.result;
+                    status = 1;
+                }
+                else window.location.href = "menu.html";
             }
-            else window.location.href = "menu.html";
+
         });
 
     </script>

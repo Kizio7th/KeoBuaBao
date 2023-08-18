@@ -14,7 +14,6 @@ export class DailyRankAPI {
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
         const preDay = await DayRepository.findOne({ where: { time: Between(yesterday, today) } })
-        console.log(await DailyRankRepository.find({ where: { day: preDay } }))
         res.json(await DailyRankRepository.find({ where: { day: preDay } }))
     }
 }
