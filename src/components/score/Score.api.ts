@@ -11,4 +11,8 @@ export class ScoreAPI {
     public async tradePoint(req: Request, res: Response, next: NextFunction) {
         res.status(200).json({ message: await ScoreRepository.tradeScore(await UserRepository.findOne({ where: { id: res.locals.user.id } })) })
     }
+    @Get("history")
+    public async history(req: Request, res: Response, next: NextFunction) {
+        res.status(200).json(await ScoreRepository.find({ where: { user: await UserRepository.findOne({ where: { id: res.locals.user.id } }) } }))
+    }
 }

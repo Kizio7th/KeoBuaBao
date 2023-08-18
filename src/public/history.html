@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h2>History</h2>
+    <table id="history" border="1">
+    </table>
+</body>
+<script>
+    const bearerToken = localStorage.getItem('bearerToken');
+    const headers = {
+        Authorization: `Bearer ${bearerToken}`,
+        "Content-Type": "application/json",
+    };
+    fetch("http://localhost:8080/api/score/history", {
+        method: 'GET',
+        headers: headers
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            createTable(data)
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+    function createTable(jsonData) {
+        var table = document.getElementById("history");
+
+        var headerRow = table.insertRow();
+        var keys = Object.keys(jsonData[0]);
+        for (var i = 0; i < keys.length - 1; i++) {
+            var headerCell = document.createElement("th");
+            headerCell.innerHTML = keys[i];
+            headerRow.appendChild(headerCell);
+        }
+
+        for (var i = 0; i < jsonData.length; i++) {
+            var dataRow = table.insertRow();
+            for (var j = 0; j < keys.length - 1; j++) {
+                var dataCell = dataRow.insertCell();
+                dataCell.innerHTML = jsonData[i][keys[j]];
+            }
+        }
+    }
+
+</script>
+
+</html>

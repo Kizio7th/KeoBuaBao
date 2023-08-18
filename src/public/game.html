@@ -101,6 +101,9 @@
             }
 
         });
+        socket.on("disconnect", () => {
+            backToMenu()
+        });
 
     </script>
 </body>

@@ -9,6 +9,11 @@
         button {
             margin: 10px;
         }
+
+        button>a {
+            text-decoration: none;
+            color: #000;
+        }
     </style>
 </head>
 
@@ -19,7 +24,8 @@
                 style="height: 15px;"></p>
     </div>
     <div><button onclick="tradeScore()">Đổi lượt</button></div>
-    <div><button><a href="dailyRank.html" style="text-decoration: none;color: #000;">Xếp hạng ngày</a></button></div>
+    <div><button><a href="history.html">Lịch sử đấu</a></button></div>
+    <div><button><a href="http://localhost:8080/api/dailyRank/today">Xếp hạng ngày</a></button></div>
     <div><button>Xếp hạng tuần</button></div>
     <div><button>Xếp hạng tháng</button></div>
     <div><button onclick="logout()">Đăng xuất</button></div>
