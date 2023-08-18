@@ -11,6 +11,8 @@ import { DailyRank } from '../../components/rank/daily/DailyRank.entity';
 import { Day } from '../../components/time/day/Day.entity';
 import { WeeklyRank } from '../../components/rank/weekly/WeeklyRank.entity';
 import { Week } from '../../components/time/week/Week.entity';
+import { Month } from '../../components/time/month/Month.entity';
+import { MonthlyRank } from '../../components/rank/month/MonthlyRank.entity';
 
 const dataSource = new DataSource({
   type: 'mysql',
@@ -33,7 +35,9 @@ const dataSource = new DataSource({
     DailyRank,
     Day,
     WeeklyRank,
-    Week
+    Week,
+    Month,
+    MonthlyRank
   ],
   cache: {
     // type: 'ioredis',

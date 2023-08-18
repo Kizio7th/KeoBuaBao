@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Đăng nhập</title>
+</head>
+
+<body>
+    <h2>Đăng nhập</h2>
+    <form id="login-form">
+        <label for="username">Tên người dùng:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">Mật khẩu:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <button type="submit">Đăng nhập</button>
+    </form>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('http://localhost:8080/api/user/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ "Name": username, "Password": password })
+                });
+
+                if (response.status === 200) {
+                    const data = await response.text();
+                    console.log(data);
+                    localStorage.setItem("bearerToken", data);
+                    window.location.href = "menu.html";
+                } else {
+                    document.getElementById('result').innerHTML = 'Đăng nhập thất bại';
+                }
+            } catch (error) {
+                console.error(error);
+            }
+
+        });
+    </script>
+</body>
+
+</html>

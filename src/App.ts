@@ -11,6 +11,8 @@ import { MatchAPI } from './components/match/Match.api';
 import { ScoreAPI } from './components/score/Score.api';
 import { SkinAPI } from './components/skin/Skin.api';
 import { DailyRankAPI } from './components/rank/daily/DailyRank.api';
+import { WeeklyRankAPI } from './components/rank/weekly/WeeklyRank.api';
+import { MonthlyRankAPI } from './components/rank/month/MonthlyRank.api';
 
 export class App extends Server {
   constructor() {
@@ -22,7 +24,7 @@ export class App extends Server {
   public server = createServer(this.app)
 
   public start(): void {
-    const port = process.env.PORT || 3000
+    const port = process.env.PORT || 8080
 
     this.server.listen(port, () => {
       console.log('Server listening on port: ' + port)
@@ -33,6 +35,7 @@ export class App extends Server {
     cronTask.increaseTurn.start()
     cronTask.updateDailyRank.start()
     cronTask.updateWeeklyRank.start()
+    cronTask.updateMonthlyRank.start()
   }
 
   private applyMiddleWares() {
@@ -78,7 +81,9 @@ export class App extends Server {
         new MatchAPI(),
         new ScoreAPI(),
         new SkinAPI(),
-        new DailyRankAPI()
+        new DailyRankAPI(),
+        new WeeklyRankAPI(),
+        new MonthlyRankAPI()
       ])
     } catch (error) {
       console.log(error)

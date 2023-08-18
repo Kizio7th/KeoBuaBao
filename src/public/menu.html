@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        button {
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="display: flex;">
+        <button onclick="findMatch()">Tìm trận</button>
+        <p id="findMatch" style="display: none;">Finding the other player <img src="image/loading.gif" alt=""
+                style="height: 15px;"></p>
+    </div>
+    <div><button onclick="tradeScore()">Đổi lượt</button></div>
+    <div><button><a href="dailyRank.html" style="text-decoration: none;">Xếp hạng ngày</a></button></div>
+    <div><button>Xếp hạng tuần</button></div>
+    <div><button>Xếp hạng tháng</button></div>
+    <div><button onclick="logout()">Đăng xuất</button></div>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+<script>
+    const bearerToken = localStorage.getItem('bearerToken');
+    const headers = {
+        Authorization: `Bearer ${bearerToken}`,
+        "Content-Type": "application/json",
+    };
+    async function findMatch() {
+        const loading = document.getElementById("findMatch");
+        loading.style.display = "block";
+
+        fetch(`http://localhost:8080/api/findMatch/matching`, {
+            method: "GET",
+            headers: headers,
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.status == 0) alert(data.message)
+                else {
+                    if (data.matchId) {
+                        console.log(data.matchId)
+                        localStorage.setItem("matchId", data.matchId);
+                        window.location.href = "game.html";
+                    }
+                    else localStorage.setItem("matchId", 0);
+                }
+
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+
+
+    }
+    async function tradeScore() {
+        fetch(`http://localhost:8080/api/score/tradeScore`, {
+            method: "GET",
+            headers: headers,
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                alert(data.message)
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    }
+    function logout() {
+        window.location.href = "login.html";
+        localStorage.removeItem("bearerToken");
+    }
+    const socket = io("ws://localhost:8080");
+    socket.on('connect', () => {
+        console.log('Socket connected successfully');
+    });
+    socket.on('matching', (data) => {
+        let matchId = localStorage.getItem("matchId");
+        console.log(matchId)
+        if (matchId == 0) {
+            localStorage.setItem("matchId", data.matchId);
+            window.location.href = "game.html";
+        }
+    });
+</script>
+
+</html>

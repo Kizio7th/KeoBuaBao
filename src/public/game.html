@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kéo Búa Bao</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .game-container {
+            margin: 50px auto;
+        }
+
+        .choice {
+            display: inline-block;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        img {
+            height: 50px;
+            border: black solid 1px;
+            padding: 10px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick="backToMenu()">Back to menu</button>
+    <div class="game-container">
+        <h1>Chọn lựa của bạn</h1>
+        <div class="choice" onclick="choose('rock')"><img src="image/rock.png" alt=""></div>
+        <div class="choice" onclick="choose('paper')"><img src="image/paper.png" alt=""></div>
+        <div class="choice" onclick="choose('scissors')"><img src="image/scissors.png" alt=""></div>
+        <p id="result"></p>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+    <script>
+        let status = 0;
+        let matchId = localStorage.getItem("matchId");
+        console.log(matchId)
+        let token = localStorage.getItem('bearerToken');
+        console.log(token)
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        };
+        function choose(choice) {
+            if (status == 1) return;
+            const data = { "Choice": choice };
+            fetch(`http://localhost:8080/api/match/${matchId}`, {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify(data),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    document.getElementById("result").textContent = data.message;
+                    status = data.status;
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                });
+        }
+        function backToMenu() {
+            if (status != 1) {
+                status = 1;
+                const result = window.confirm("Bạn có chắc muốn bỏ cuộc?");
+                if (result) {
+                    fetch(`http://localhost:8080/api/match/giveUp/${matchId}`, {
+                        method: "GET",
+                        headers: headers,
+                    })
+                        .then()
+                        .catch((error) => {
+                            console.error("Error:", error);
+                        });
+                }
+            }
+            else window.location.href = "menu.html";
+
+
+        }
+
+        const socket = io("ws://localhost:8080");
+        socket.on('connect', () => {
+            console.log('Socket connected successfully');
+        });
+        socket.on('match-result', (data) => {
+            if (data.status == status) {
+                document.getElementById("result").textContent = data.result;
+                status = 1;
+            }
+            else window.location.href = "menu.html";
+        });
+
+    </script>
+</body>
+
+</html>

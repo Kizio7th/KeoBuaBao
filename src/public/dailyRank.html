@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Rank</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin: auto;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Daily Rank</h1>
+
+</body>
+<script>
+    const bearerToken = localStorage.getItem('bearerToken');
+    const headers = {
+        Authorization: `Bearer ${bearerToken}`,
+        "Content-Type": "application/json",
+    };
+
+    function createTable(tableData) {
+        const table = document.createElement("table");
+        const tableHeader = document.createElement("thead");
+        const tableBody = document.createElement("tbody");
+
+        const headerLabels = ["ID", "Tên", "Điểm", "Rank"];
+
+        const headerRow = document.createElement("tr");
+        headerLabels.forEach(label => {
+            const header = document.createElement("th");
+            header.textContent = label;
+            headerRow.appendChild(header);
+        });
+
+        tableHeader.appendChild(headerRow);
+        table.appendChild(tableHeader);
+
+        tableData.forEach(item => {
+            const row = document.createElement("tr");
+
+            const idCell = document.createElement("td");
+            idCell.textContent = item.id;
+            row.appendChild(idCell);
+
+            const nameCell = document.createElement("td");
+            nameCell.textContent = item.name;
+            row.appendChild(nameCell);
+
+            const scoreCell = document.createElement("td");
+            scoreCell.textContent = item.score;
+            row.appendChild(scoreCell);
+
+            const rankCell = document.createElement("td");
+            rankCell.textContent = item.rank;
+            row.appendChild(rankCell);
+
+            tableBody.appendChild(row);
+        });
+
+        table.appendChild(tableBody);
+
+        const tableContainer = document.getElementById("tableContainer");
+        tableContainer.appendChild(table);
+    }
+
+    fetch(`http://localhost:8080/api/dailyRank/today`, {
+        method: "GET",
+        headers: headers,
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            createTable(data);
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+
+</script>
+
+</html>

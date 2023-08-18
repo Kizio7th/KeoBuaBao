@@ -16,6 +16,7 @@ export const ScoreRepository = dataSource.getRepository(Score).extend({
         await UserRepository.save(user)
     },
     async tradeScore(user: User) {
+        if(user.totalScore <= 0 ) return "Trade failed, you have no score"
         try {
             user.turn += 2;
             this.scoreUpdate(1, false, "Trade point to turns", user)

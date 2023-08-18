@@ -1,7 +1,6 @@
 import { ClassMiddleware, Controller, Get } from "@overnightjs/core";
 import UserMiddleware from "../../user/User.middleware";
 import { NextFunction, Request, Response } from "express";
-import { CustomRequest } from "../../../types/customRequest";
 import { MonthRepository } from "../../time/month/Month.repositort";
 import { Between } from "typeorm";
 import { MonthlyRankRepository } from "./MonthlyRank.repository";
@@ -10,7 +9,7 @@ import { MonthlyRankRepository } from "./MonthlyRank.repository";
 @ClassMiddleware([UserMiddleware.checkAuth])
 export class MonthlyRankAPI {
     @Get("today")
-    public async getTodayMonthlyRank(req: CustomRequest, res: Response, next: NextFunction) {
+    public async getTodayMonthlyRank(req: Request, res: Response, next: NextFunction) {
         const currentDate = new Date();
         const currentMonth = currentDate.getMonth();
         const nextMonth = currentMonth + 1;
