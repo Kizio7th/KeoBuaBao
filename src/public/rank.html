@@ -5,33 +5,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        button {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body>
     <a href="menu.html">Back to menu</a>
-    <h2>Lịch sử</h2>
-    <table id="history" border="1">
+    <div>
+        <button onclick="rank('dailyRank')">BXH hằng ngày</button>
+        <button onclick="rank('weeklyRank')">BXH hằng tuần</button>
+        <button onclick="rank('monthlyRank')">BXH hằng tháng</button>
+    </div>
+    <h2>Bảng xếp hạng</h2>
+    <table id="rank" border="1">
     </table>
 </body>
 <script>
+    var table = document.getElementById("rank");
     const bearerToken = localStorage.getItem('bearerToken');
     const headers = {
         Authorization: `Bearer ${bearerToken}`,
         "Content-Type": "application/json",
     };
-    fetch("http://localhost:8080/api/score/history", {
-        method: 'GET',
-        headers: headers
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            createTable(data)
+
+    function rank(rank) {
+        fetch(`http://localhost:8080/api/rank/${rank}`, {
+            method: 'GET',
+            headers: headers
         })
-        .catch((error) => {
-            console.error("Error:", error);
-        });
+            .then((response) => response.json())
+            .then((data) => {
+                createTable(data)
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                table.innerHTML = "";
+            });
+    }
     function createTable(jsonData) {
-        var table = document.getElementById("history");
         table.innerHTML = "";
         var headerRow = table.insertRow();
         var keys = Object.keys(jsonData[0]);

@@ -85,7 +85,7 @@ export const updateWeeklyRank = cron.schedule("0 0 * * 1", async () => {
         console.log(error)
     }
 });
-export const updateMonthlyRank = cron.schedule("0 0 1 * *", async () => {
+export const updateMonthlyRank = cron.schedule("0 0 1 * * *", async () => {
     try {
         const thisMonth = new Date();
         let daysInMonth = new Date(thisMonth.getFullYear(), thisMonth.getMonth() + 1, 0).getDate();
