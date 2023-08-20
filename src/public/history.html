@@ -34,7 +34,7 @@
 
         var headerRow = table.insertRow();
         var keys = Object.keys(jsonData[0]);
-        for (var i = 0; i < keys.length - 1; i++) {
+        for (var i = 0; i < keys.length; i++) {
             var headerCell = document.createElement("th");
             headerCell.innerHTML = keys[i];
             headerRow.appendChild(headerCell);
@@ -42,7 +42,7 @@
 
         for (var i = 0; i < jsonData.length; i++) {
             var dataRow = table.insertRow();
-            for (var j = 0; j < keys.length - 1; j++) {
+            for (var j = 0; j < keys.length; j++) {
                 var dataCell = dataRow.insertCell();
                 dataCell.innerHTML = jsonData[i][keys[j]];
             }

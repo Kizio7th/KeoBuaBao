@@ -9,8 +9,13 @@ export class UserAPI {
     @Post("register")
     public async register(req: Request, res: Response, next: NextFunction) {
         const { Name, Avatar, Password } = req.body;
-        const user = await UserRepository.addUser(Name, Avatar, Password);
-        res.send({ user });
+        try {
+            const user = await UserRepository.addUser(Name, Avatar, Password);
+            res.send({ user });
+        } catch (error) {
+            console.error(error)
+        }
+
     }
     @Post("login")
     public async login(req: Request, res: Response, next: NextFunction) {
