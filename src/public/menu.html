@@ -39,9 +39,6 @@
         "Content-Type": "application/json",
     };
     async function findMatch() {
-        const loading = document.getElementById("findMatch");
-        loading.style.display = "block";
-
         fetch(`http://localhost:8080/api/findMatch/matching`, {
             method: "GET",
             headers: headers,
@@ -50,6 +47,8 @@
             .then((data) => {
                 if (data.status == 0) alert(data.message)
                 else {
+                    const loading = document.getElementById("findMatch");
+                    loading.style.display = "block";
                     if (data.matchId) {
                         console.log(data.matchId)
                         localStorage.setItem("matchId", data.matchId);

@@ -24,7 +24,7 @@ export class MatchAPI {
                 this.sendResult("You lose", 0, matchId);
             }
             else if (MatchRepository.result(Choice, p1.choice) == -1) {
-                MatchRepository.updateResult(matchId, res.locals.user.id);
+                MatchRepository.updateResult(matchId, p1.playerId);
                 res.status(200).json({ message: "You lose", status: 1 });
                 this.sendResult("You win", 0, matchId);
             }
