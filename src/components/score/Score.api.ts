@@ -13,6 +13,21 @@ export class ScoreAPI {
     }
     @Get("history")
     public async history(req: Request, res: Response, next: NextFunction) {
-        res.status(200).json(await ScoreRepository.find({ where: { user: await UserRepository.findOne({ where: { id: res.locals.user.id } }) } }))
+        try {
+            const scores = await ScoreRepository.find({ where: { user: await UserRepository.findOne({ where: { id: res.locals.user.id } }) } });
+            const history = []
+            for (const i of scores) {
+                history.push({
+                    id: i.id,
+                    score: i.status ? i.score : i.score * -1,
+                    description: i.description,
+                    userId: i.user.id,
+                    userName: i.user.name
+                })
+            }
+            res.status(200).json(history)
+        } catch (error) {
+            console.error(error)
+        }
     }
 }
