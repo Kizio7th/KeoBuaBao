@@ -11,9 +11,10 @@ export class WeeklyRankAPI {
     @Get("today")
     public async getTodayWeeklyRank(req: Request, res: Response, next: NextFunction) {
         const thisWeek = new Date();
-        const preWeek = new Date(thisWeek);
-        preWeek.setDate(preWeek.getDate() - 7);
-        const startTime = await WeekRepository.findOne({ where: { startTime: Between(preWeek, thisWeek) } })
-        res.json(await WeeklyRankRepository.find({ where: { week: startTime } }))
+        const lastWeek = new Date(thisWeek);
+        lastWeek.setDate(lastWeek.getDate() - 7);
+
+        const preWeek = await WeekRepository.findOne({ where: { time: Between(lastWeek, thisWeek) } })
+        res.json(await WeeklyRankRepository.find({ where: { week: preWeek } }))
     }
 }

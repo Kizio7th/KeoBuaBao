@@ -10,14 +10,12 @@ import { MonthlyRankRepository } from "./MonthlyRank.repository";
 export class MonthlyRankAPI {
     @Get("today")
     public async getTodayMonthlyRank(req: Request, res: Response, next: NextFunction) {
-        const currentDate = new Date();
-        const currentMonth = currentDate.getMonth();
-        const nextMonth = currentMonth + 1;
-        const lastDayOfMonth = new Date(currentDate.getFullYear(), nextMonth, 0).getDate();
         const thisMonth = new Date();
-        const preMonth = new Date(thisMonth);
-        preMonth.setDate(preMonth.getDate() - lastDayOfMonth);
-        const startTime = await MonthRepository.findOne({ where: { startTime: Between(preMonth, thisMonth) } })
-        res.json(await MonthlyRankRepository.find({ where: { month: startTime } }))
+        let daysInMonth = new Date(thisMonth.getFullYear(), thisMonth.getMonth() + 1, 0).getDate();
+        const lastMonth = new Date(thisMonth);
+        lastMonth.setDate(lastMonth.getDate() - daysInMonth);
+
+        const preMonth = await MonthRepository.findOne({ where: { time: Between(lastMonth, thisMonth) } })
+        res.json(await MonthlyRankRepository.find({ where: { month: preMonth } }))
     }
 }
