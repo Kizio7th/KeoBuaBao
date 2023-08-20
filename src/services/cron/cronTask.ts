@@ -22,7 +22,6 @@ export const updateDailyRank = cron.schedule("0 0 * * *", async () => {
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
         const preDay = await DayRepository.findOne({ where: { time: Between(yesterday, today) } })
-        console.log(preDay)
         if (preDay) {
             const preRank = await DailyRankRepository.find({ where: { day: preDay } });
             for (const i of preRank) {
