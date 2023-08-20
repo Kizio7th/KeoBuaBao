@@ -7,6 +7,9 @@ import { Between } from 'typeorm';
 import { WeeklyRankRepository } from '../../components/rank/weekly/WeeklyRank.repository';
 import { MonthlyRankRepository } from '../../components/rank/month/MonthlyRank.repository';
 import { MonthRepository } from '../../components/time/month/Month.repositort';
+import { DailyRank } from '../../components/rank/daily/DailyRank.entity';
+import { WeeklyRank } from '../../components/rank/weekly/WeeklyRank.entity';
+import { MonthlyRank } from '../../components/rank/month/MonthlyRank.entity';
 
 
 export const increaseTurn = cron.schedule("0 0 * * *", async () => {
@@ -21,26 +24,29 @@ export const updateDailyRank = cron.schedule("0 0 * * *", async () => {
         const today = new Date();
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
+
+        const day = await DayRepository.save({ time: today });
+        const users = await UserRepository.find();
+        const ranks = [];
+        for (const i of users) {
+            const dailyRank = new DailyRank();
+            dailyRank.user = i;
+            dailyRank.day = day;
+            dailyRank.score = i.totalScore;
+            ranks.push(dailyRank);
+        }
+
         const preDay = await DayRepository.findOne({ where: { time: Between(yesterday, today) } })
         if (preDay) {
-            const preRank = await DailyRankRepository.find({ where: { day: preDay } });
-            for (const i of preRank) {
-                i.score = i.user.totalScore - i.score;
-            }
-            preRank.sort((a, b) => b.score - a.score);
-            for (let i = 0; i < preRank.length; i++) {
-                preRank[i].rank = i + 1;
-                await DailyRankRepository.save(preRank[i]);
+            for (const i of ranks) {
+                const preRank = await DailyRankRepository.findOne({ where: { user: i.user, day: preDay } })
+                if (preRank) i.score -= preRank.score
             }
         }
-        const day = await DayRepository.save({ time: new Date() });
-        const users = await UserRepository.find();
-        for (const i of users) {
-            await DailyRankRepository.save({
-                user: i,
-                day: day,
-                score: i.totalScore
-            })
+        ranks.sort((a, b) => b.score - a.score);
+        for (let i = 0; i < ranks.length; i++) {
+            ranks[i].rank = i + 1;
+            await DailyRankRepository.save(ranks[i]);
         }
     } catch (error) {
         console.log(error)
@@ -49,28 +55,31 @@ export const updateDailyRank = cron.schedule("0 0 * * *", async () => {
 export const updateWeeklyRank = cron.schedule("0 0 * * 1", async () => {
     try {
         const thisWeek = new Date();
-        const preWeek = new Date(thisWeek);
-        preWeek.setDate(preWeek.getDate() - 7);
-        const startTime = await WeekRepository.findOne({ where: { startTime: Between(preWeek, thisWeek) } })
-        if (startTime) {
-            const preRank = await WeeklyRankRepository.find({ where: { week: startTime } });
-            for (const i of preRank) {
-                i.score = i.user.totalScore - i.score;
-            }
-            preRank.sort((a, b) => b.score - a.score);
-            for (let i = 0; i < preRank.length; i++) {
-                preRank[i].rank = i + 1;
-                await WeeklyRankRepository.save(preRank[i]);
+        const lastWeek = new Date(thisWeek);
+        lastWeek.setDate(lastWeek.getDate() - 7);
+
+        const week = await WeekRepository.save({ time: thisWeek });
+        const users = await UserRepository.find();
+        const ranks = [];
+        for (const i of users) {
+            const weeklyRank = new WeeklyRank();
+            weeklyRank.user = i;
+            weeklyRank.week = week;
+            weeklyRank.score = i.totalScore;
+            ranks.push(weeklyRank);
+        }
+
+        const preWeek = await WeekRepository.findOne({ where: { time: Between(lastWeek, thisWeek) } })
+        if (preWeek) {
+            for (const i of ranks) {
+                const preRank = await WeeklyRankRepository.findOne({ where: { user: i.user, week: preWeek } });
+                if (preRank) i.score -= preRank.score
             }
         }
-        const week = await WeekRepository.save({ startTime: new Date() });
-        const users = await UserRepository.find();
-        for (const i of users) {
-            await WeeklyRankRepository.save({
-                user: i,
-                startTime: week,
-                score: i.totalScore
-            })
+        ranks.sort((a, b) => b.score - a.score);
+        for (let i = 0; i < ranks.length; i++) {
+            ranks[i].rank = i + 1;
+            await WeeklyRankRepository.save(ranks[i]);
         }
     } catch (error) {
         console.log(error)
@@ -78,33 +87,34 @@ export const updateWeeklyRank = cron.schedule("0 0 * * 1", async () => {
 });
 export const updateMonthlyRank = cron.schedule("0 0 1 * *", async () => {
     try {
-        const currentDate = new Date();
-        const currentMonth = currentDate.getMonth();
-        const nextMonth = currentMonth + 1;
-        const lastDayOfMonth = new Date(currentDate.getFullYear(), nextMonth, 0).getDate();
         const thisMonth = new Date();
-        const preMonth = new Date(thisMonth);
-        preMonth.setDate(preMonth.getDate() - lastDayOfMonth);
-        const startTime = await MonthRepository.findOne({ where: { startTime: Between(preMonth, thisMonth) } })
-        if (startTime) {
-            const preRank = await MonthlyRankRepository.find({ where: { month: startTime } });
-            for (const i of preRank) {
-                i.score = i.user.totalScore - i.score;
-            }
-            preRank.sort((a, b) => b.score - a.score);
-            for (let i = 0; i < preRank.length; i++) {
-                preRank[i].rank = i + 1;
-                await MonthlyRankRepository.save(preRank[i]);
-            }
-        }
-        const month = await MonthRepository.save({ startTime: new Date() });
+        let daysInMonth = new Date(thisMonth.getFullYear(), thisMonth.getMonth() + 1, 0).getDate();
+        const lastMonth = new Date(thisMonth);
+        lastMonth.setDate(lastMonth.getDate() - daysInMonth);
+
+        const month = await MonthRepository.save({ time: thisMonth });
         const users = await UserRepository.find();
+        const ranks = [];
         for (const i of users) {
-            await MonthlyRankRepository.save({
-                user: i,
-                startTime: month,
-                score: i.totalScore
-            })
+            const monthlyRank = new MonthlyRank();
+            monthlyRank.user = i;
+            monthlyRank.month = month;
+            monthlyRank.score = i.totalScore;
+            ranks.push(monthlyRank);
+        }
+
+        const preMonth = await MonthRepository.findOne({ where: { time: Between(lastMonth, thisMonth) } })
+        if (preMonth) {
+            for (const i of ranks) {
+                const preRank = await MonthlyRankRepository.findOne({ where: { user: i.user, month: preMonth } });
+                if (preRank) i.score -= preRank.score
+            }
+
+        }
+        ranks.sort((a, b) => b.score - a.score);
+        for (let i = 0; i < ranks.length; i++) {
+            ranks[i].rank = i + 1;
+            await MonthlyRankRepository.save(ranks[i]);
         }
     } catch (error) {
         console.log(error)

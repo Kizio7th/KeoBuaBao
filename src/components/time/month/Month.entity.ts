@@ -6,7 +6,7 @@ export class Month {
     @PrimaryGeneratedColumn()
     id:number
     @Column({ type: "datetime", nullable: true })
-    startTime: Date
+    time: Date
     @OneToMany(() => MonthlyRank, (monthlyRank) => monthlyRank.month, { cascade: true })
     monthlyRank: MonthlyRank[]
 }
